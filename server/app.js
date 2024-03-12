@@ -69,14 +69,17 @@ app.get('/cats/:id/toys', async (req, res, next) => {
             // Count all of this cat's toys, and display the value with a
             // key of `toyCount`
             // Your code here
+            [sequelize.fn('COUNT', sequelize.col('Toys.name')), 'toyCount'],
 
             // Find the average price of this cat's toys, and display the
             // value with a key of `averageToyPrice`
             // Your code here
+            [sequelize.fn('AVG', sequelize.col('Toys.price')), 'averageToyPrice'],
 
             // Find the total price of this cat's toys, and display the
             // value with a key of `totalToyPrice`
             // Your code here
+            [sequelize.fn('SUM', sequelize.col('Toys.price')), 'totalToyPrice']
         ],
         raw: true
     });
@@ -90,15 +93,20 @@ app.get('/cats/:id/toys', async (req, res, next) => {
 
     // Define a new variable, `catData`, and set it equal to the `cat` variable converted to JSON 
     // Your code here
+    const catData = { ...cat.toJSON() };
 
     // Add the `toyCount`, `averageToyPrice`, and `totalToyPrice` keys to the
     // catData object, with their aggregate values from `catToysAggregateData`
     // Your code here
+    catData.toysCount = catToysAggregateData.toyCount;
+    catData.averageToyPrice = catToysAggregateData.averageToyPrice;
+    catData.totalToyPrice = catToysAggregateData.totalToyPrice;
 
 
     // After the steps above are complete, refactor the line below to only
     // display `catData`
-    res.json({ catToysAggregateData, cat });
+    // res.json({ catToysAggregateData, cat });
+    res.json({ catData });
 })
 
 
